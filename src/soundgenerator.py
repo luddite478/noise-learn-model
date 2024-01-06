@@ -21,8 +21,6 @@ class SoundGenerator:
         generated_spectrograms, latent_representations = \
             self.vae.reconstruct(spectrograms)
         signals = self.convert_spectrograms_to_audio(generated_spectrograms, min_max_values)
-        print('latent_representations 1', latent_representations[0])
-        print('latent_representations 2', latent_representations[0].shape)
         return signals, latent_representations
 
     def convert_spectrograms_to_audio(self, spectrograms, min_max_values):

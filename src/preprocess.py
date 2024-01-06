@@ -171,22 +171,21 @@ class PreprocessingPipeline:
             "max": max_val
         }
 
-if __name__ == "__main__":
-    
+def preprocess():
     FRAME_SIZE = 512
     HOP_LENGTH = 256
     DURATION = 10.025 # in seconds
     SAMPLE_RATE = 22050
     MONO = True
 
-    # required_signal_length = (2154 * HOP_LENGTH) + FRAME_SIZE
-    # required_duration = required_signal_length / SAMPLE_RATE
+    data_dir = os.getenv('DATA_PATH')
+    SPECTROGRAMS_SAVE_DIR = os.path.join(data_dir, 'spectrograms')
+    MIN_MAX_VALUES_SAVE_DIR = os.path.join(data_dir, 'fsdd')
+    FILES_DIR = os.path.join(data_dir, 'input_files')
 
-    # print(required_duration)  # This will give you the duration to use
-
-    SPECTROGRAMS_SAVE_DIR = os.getenv("SPECTROGRAMS_SAVE_DIR")
-    MIN_MAX_VALUES_SAVE_DIR = os.getenv("MIN_MAX_VALUES_SAVE_DIR")
-    FILES_DIR = os.getenv("FILES_DIR")
+    os.makedirs(SPECTROGRAMS_SAVE_DIR, exist_ok=True)
+    os.makedirs(MIN_MAX_VALUES_SAVE_DIR, exist_ok=True)
+    os.makedirs(FILES_DIR, exist_ok=True)
 
     # instantiate all objects
     loader = Loader(SAMPLE_RATE, DURATION, MONO)
@@ -203,6 +202,10 @@ if __name__ == "__main__":
     preprocessing_pipeline.saver = saver
 
     preprocessing_pipeline.process(FILES_DIR)
+
+if __name__ == "__main__":
+    preprocess()
+
 
     # MIN_MAX_VALUES_PATH = os.path.join(MIN_MAX_VALUES_SAVE_DIR, 'min_max_values.pkl')
     # with open(MIN_MAX_VALUES_PATH, "rb") as f:

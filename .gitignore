@@ -4,4 +4,4 @@ model
 __pycache__
 src/model
 src/__pycache__
-
+data

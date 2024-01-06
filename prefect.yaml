@@ -1,0 +1,50 @@
+name: flows
+prefect-version: 2.13.8
+
+# build:
+# - prefect_docker.deployments.steps.build_docker_image:
+#     id: build-image
+#     requires: prefect-docker>=0.4.0
+#     image_name: 'luddite478/noise-learn'
+#     tag: latest
+#     dockerfile: Dockerfile
+#     platform: linux/amd64
+
+# push:
+# - prefect_docker.deployments.steps.push_docker_image:
+#     requires: prefect-docker>=0.4.0
+#     image_name: '{{ build-image.image_name }}'
+#     tag: '{{ build-image.tag }}'
+#     credentials: "{{ prefect.blocks.docker-registry-credentials.dockerhub }}"
+
+pull:
+- prefect.deployments.steps.set_working_directory:
+    directory: /
+- prefect.deployments.steps.git_clone:
+    repository: "https://github.com/luddite478/noise-gen-model.git"
+- prefect.deployments.steps.set_working_directory:
+    directory: /
+- prefect.deployments.steps.git_clone:
+    repository: "https://github.com/luddite478/noise-gen-ops.git"
+- prefect.deployments.steps.set_working_directory:
+    directory: /noise-gen-ops/learn
+
+deployments:
+- name: training
+  version:
+  tags: []
+  description:
+  entrypoint: flows/run_training_pipeline.py:run_training_pipeline
+  parameters: {
+    'items': [],
+    'params': {
+      'audio_length': 30
+    }
+  }
+  work_pool:
+    name: noise-learn-k8s
+    work_queue_name:
+    job_variables: {
+      # image: '{{ build-image.image_name }}'
+    }
+  schedule:

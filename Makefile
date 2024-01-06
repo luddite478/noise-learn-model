@@ -1,23 +1,56 @@
 include .local.env
-DOCKER_SPECTROGRAMS_SAVE_DIR := $(shell grep ^SPECTROGRAMS_SAVE_DIR= .docker.env | cut -d '=' -f 2)
-DOCKER_MIN_MAX_VALUES_SAVE_DIR := $(shell grep ^MIN_MAX_VALUES_SAVE_DIR= .docker.env | cut -d '=' -f 2)
-DOCKER_FILES_DIR := $(shell grep ^FILES_DIR= .docker.env | cut -d '=' -f 2)
-DOCKER_SRC_DIR := $(shell grep ^SRC_DIR= .docker.env | cut -d '=' -f 2)
-DOCKER_SAVE_DIR_GENERATED := $(shell grep ^SAVE_DIR_GENERATED= .docker.env | cut -d '=' -f 2)
+HOST_DATA_DIR = $(PWD)/data
+HOST_PROJECT_DIR = $(PWD)
+CONTAINER_PROJECT_DIR = /app
+CONTAINER_DATA_DIR = /data
+CONTAINER_SRC_DIR = /app/src
+CONTAINER_FLOWS_DIR = /app/flows
+
+init:
+	rm -rf $(HOST_DATA_DIR) && mkdir -p $(HOST_DATA_DIR)/input_files
 
 docker-build:
 	docker build --progress=plain -t tf-2021-vae .
 
 get-tensor:
-	docker run -ti --gpus all --rm --env-file .docker.env -v $(PWD)/src:$(DOCKER_SRC_DIR) -v $(SPECTROGRAMS_SAVE_DIR):$(DOCKER_SPECTROGRAMS_SAVE_DIR) -v $(MIN_MAX_VALUES_SAVE_DIR):$(DOCKER_MIN_MAX_VALUES_SAVE_DIR) -v $(FILES_DIR):$(DOCKER_FILES_DIR) tf-2021-vae python get_tensor_size.py
+	docker run -ti --gpus all --rm \
+		-v $(HOST_PROJECT_DIR):$(CONTAINER_PROJECT_DIR) \
+		-w $(CONTAINER_SRC_DIR) \
+		tf-2021-vae python get_tensor_size.py
+
+download:
+	docker run -ti --gpus all --rm \
+		-v $(HOST_DATA_DIR):$(CONTAINER_DATA_DIR) \
+		-v $(HOST_PROJECT_DIR):$(CONTAINER_PROJECT_DIR) \
+		-w $(CONTAINER_SRC_DIR) \
+		tf-2021-vae python download.py
 
 preprocess:
-	docker run -ti --gpus all --rm --env-file .docker.env -v $(PWD)/src:$(DOCKER_SRC_DIR) -v $(SPECTROGRAMS_SAVE_DIR):$(DOCKER_SPECTROGRAMS_SAVE_DIR) -v $(MIN_MAX_VALUES_SAVE_DIR):$(DOCKER_MIN_MAX_VALUES_SAVE_DIR) -v $(FILES_DIR):$(DOCKER_FILES_DIR) tf-2021-vae python preprocess.py
+	docker run -ti --gpus all --rm \
+		-v $(HOST_DATA_DIR):$(CONTAINER_DATA_DIR) \
+		-v $(HOST_PROJECT_DIR):$(CONTAINER_PROJECT_DIR) \
+		-w $(CONTAINER_SRC_DIR) \
+		tf-2021-vae python preprocess.py
 
 train:
-	docker run -ti --gpus all --rm --env-file .docker.env -v $(PWD)/src:$(DOCKER_SRC_DIR) -v $(SPECTROGRAMS_SAVE_DIR):$(DOCKER_SPECTROGRAMS_SAVE_DIR) -v $(MIN_MAX_VALUES_SAVE_DIR):$(DOCKER_MIN_MAX_VALUES_SAVE_DIR) -v $(FILES_DIR):$(DOCKER_FILES_DIR) tf-2021-vae python train.py
+	docker run -ti --gpus all --rm \
+		-v $(HOST_DATA_DIR):$(CONTAINER_DATA_DIR) \
+		-v $(HOST_PROJECT_DIR):$(CONTAINER_PROJECT_DIR) \
+		-w $(CONTAINER_SRC_DIR) \
+		tf-2021-vae python train.py
 
 generate:
-	docker run -ti --gpus all --rm --env-file .docker.env -v $(PWD)/src:$(DOCKER_SRC_DIR) -v $(SPECTROGRAMS_SAVE_DIR):$(DOCKER_SPECTROGRAMS_SAVE_DIR) -v $(MIN_MAX_VALUES_SAVE_DIR):$(DOCKER_MIN_MAX_VALUES_SAVE_DIR) -v $(FILES_DIR):$(DOCKER_FILES_DIR) -v $(SAVE_DIR_GENERATED):$(DOCKER_SAVE_DIR_GENERATED) tf-2021-vae python generate.py
+	docker run -ti --gpus all --rm \
+		-v $(HOST_DATA_DIR):$(CONTAINER_DATA_DIR) \
+		-v $(HOST_PROJECT_DIR):$(CONTAINER_PROJECT_DIR) \
+		-w  $(CONTAINER_SRC_DIR) \
+		tf-2021-vae python generate.py
+
+run-training-pipeline:
+	docker run -ti --gpus all --rm \
+		-v $(HOST_DATA_DIR):$(CONTAINER_DATA_DIR) \
+		-v $(HOST_PROJECT_DIR):$(CONTAINER_PROJECT_DIR) \
+		-w $(CONTAINER_FLOWS_DIR) \
+		tf-2021-vae /bin/bash -c "prefect cloud login --key $(PREFECT_API_KEY) && python run_training_pipeline.py"
 
 

@@ -11,11 +11,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 HOP_LENGTH = 256
-SAVE_DIR_GENERATED = os.getenv("SAVE_DIR_GENERATED")
-MIN_MAX_VALUES_PATH   = os.getenv("MIN_MAX_VALUES_PATH")
-SAVE_DIR_ORIGINAL = os.getenv("SAVE_DIR_ORIGINAL")
-SPECTROGRAMS_PATH = os.getenv("SPECTROGRAMS_SAVE_DIR")
+data_dir = os.getenv('DATA_PATH')
+SPECTROGRAMS_PATH   = os.path.join(data_dir, 'spectrograms')
+MIN_MAX_VALUES_PATH = os.path.join(data_dir, 'fsdd/min_max_values.pkl') 
+SAVE_DIR_ORIGINAL = os.path.join(data_dir, 'original')
+SAVE_DIR_GENERATED = os.path.join(data_dir, 'generated')
+MODEL_DIR           = os.path.join(data_dir, 'model')
 
+os.makedirs(SAVE_DIR_ORIGINAL, exist_ok=True)
+os.makedirs(SAVE_DIR_GENERATED, exist_ok=True)
 
 def load_fsdd(spectrograms_path):
     x_train = []
@@ -55,7 +59,7 @@ def save_signals(signals, save_dir, sample_rate=22050):
 
 def test_generate():
     # initialise sound generator
-    vae = VAE.load("model")
+    vae = VAE.load(MODEL_DIR)
     sound_generator = SoundGenerator(vae, HOP_LENGTH)
 
     # load spectrograms + min max values
@@ -87,7 +91,7 @@ def compare_signals(signals):
         print(f'Signal {i+1}: Mean={np.mean(signal)}, StdDev={np.std(signal)}')
 
 def generate_unique():
-    vae = VAE.load("model")
+    vae = VAE.load(MODEL_DIR)
     sound_generator = SoundGenerator(vae, HOP_LENGTH)
     signals = sound_generator.generate_unique(5)
     compare_signals(signals)

@@ -6,11 +6,12 @@ from autoencoder import VAE
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = "2"
 
 LEARNING_RATE = 0.0005
-BATCH_SIZE = 1
-EPOCHS = 25
+BATCH_SIZE    = 1
+EPOCHS        = 25
 
-SPECTROGRAMS_PATH = os.getenv("SPECTROGRAMS_SAVE_DIR")
-
+data_dir            = os.getenv('DATA_PATH')
+SPECTROGRAMS_PATH   = os.path.join(data_dir, 'spectrograms')
+MODEL_DIR           = os.path.join(data_dir, 'model')
 
 def load_fsdd(spectrograms_path):
     x_train = []
@@ -24,7 +25,9 @@ def load_fsdd(spectrograms_path):
     return x_train
 
 
-def train(x_train, learning_rate, batch_size, epochs):
+def train():
+    x_train = load_fsdd(SPECTROGRAMS_PATH)
+    
     autoencoder = VAE(
         input_shape=(256, 864, 1),
         conv_filters=(512, 256, 128, 64, 32),
@@ -33,14 +36,11 @@ def train(x_train, learning_rate, batch_size, epochs):
         latent_space_dim=128
     )
     autoencoder.summary()
-    autoencoder.compile(learning_rate)
-    autoencoder.train(x_train, batch_size, epochs)
-    return autoencoder
-
-import tensorflow as tf
-
+    autoencoder.compile(LEARNING_RATE)
+    autoencoder.train(x_train, BATCH_SIZE, EPOCHS)
+    autoencoder.save(MODEL_DIR)
 
 if __name__ == "__main__":
-    x_train = load_fsdd(SPECTROGRAMS_PATH)
-    autoencoder = train(x_train, LEARNING_RATE, BATCH_SIZE, EPOCHS)
-    autoencoder.save("model")
+    train()
+
+
