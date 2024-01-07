@@ -28,7 +28,7 @@ deployments:
   version:
   tags: []
   description:
-  entrypoint: flows/run_training_pipeline.py:test
+  entrypoint: flows/test.py:test
   parameters: {
     # 'items': [{'NAME': 'genocide organ - leichenlinie', 'LINK': 'https://youtu.be/4oqxZvUGXe4?si=6ql80J4T04ZYfORh'}],
     # 'params': {
