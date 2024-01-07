@@ -21,7 +21,7 @@ from prefect import flow, task
 
 
 @flow(log_prints=True)
-def run_training_pipeline():
+def run_training_pipeline(items, params):
     items = [{'NAME': 'genocide organ - leichenlinie', 'LINK': 'https://youtu.be/4oqxZvUGXe4?si=6ql80J4T04ZYfORh'}]
     params = {
         'audio_length': 60
