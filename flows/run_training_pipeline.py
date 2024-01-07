@@ -6,6 +6,11 @@ from dotenv import dotenv_values
 from prefect.blocks.system import JSON
 import json
 
+env_json = JSON.load("noise-gen-model-env")
+env = env_json.value
+for key, value in env.items():
+    os.environ[key] = value
+
 current_dir = os.path.dirname(os.path.abspath(__file__))
 src_dir = os.path.join(os.path.dirname(current_dir), 'src')
 sys.path.append(src_dir)  
@@ -13,11 +18,6 @@ sys.path.append(src_dir)
 from download import download as run_download
 from preprocess import preprocess as run_preprocess
 from train import train as run_training
-
-env_json = JSON.load("noise-gen-model-env")
-env = env_json.value
-for key, value in env.items():
-    os.environ[key] = value
 
 @task
 def download(items, params):
