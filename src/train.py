@@ -56,7 +56,7 @@ def train():
 
     autoencoder.save(MODEL_DIR)
     artifact_uri = mlflow.get_artifact_uri()
-    print('asdasdsadasd11111111111111111111111111111111111')
+    print(artifact_uri, 'asdasdsadasd11111111111111111111111111111111111')
     mlflow.log_artifact(MODEL_DIR)
 
     mlflow.end_run()
