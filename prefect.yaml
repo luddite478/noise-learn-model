@@ -22,19 +22,13 @@ pull:
     directory: /
 - prefect.deployments.steps.git_clone:
     repository: "https://github.com/luddite478/noise-gen-model.git"
-- prefect.deployments.steps.set_working_directory:
-    directory: /
-- prefect.deployments.steps.git_clone:
-    repository: "https://github.com/luddite478/noise-gen-ops.git"
-- prefect.deployments.steps.set_working_directory:
-    directory: /noise-gen-ops/learn
 
 deployments:
 - name: training
   version:
   tags: []
   description:
-  entrypoint: flows/run_training_pipeline.py:run_training_pipeline
+  entrypoint: flows/test.py:run_training_pipeline
   parameters: {
     'items': [],
     'params': {

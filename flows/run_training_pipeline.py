@@ -43,10 +43,8 @@ def train():
 def run_training_pipeline(items, params):
     params['run_name'] = FlowRunContext.get().flow_run.dict().get('name')
     download(items, params)
-    # files = download(items, params)
     preprocess()
     train()
-    # upload()
 
 if __name__ == "__main__":
     items = [{'NAME': 'genocide organ - leichenlinie', 'LINK': 'https://youtu.be/4oqxZvUGXe4?si=6ql80J4T04ZYfORh'}]

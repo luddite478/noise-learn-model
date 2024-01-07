@@ -5,3 +5,8 @@ __pycache__
 src/model
 src/__pycache__
 data
+flows/__pycache__
+bin
+include
+lib
+lib64

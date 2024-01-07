@@ -3,7 +3,8 @@ import subprocess as sp
 from os import environ, path, makedirs, getenv
 import secrets
 
-data_dir = getenv('DATA_PATH')
+# data_dir = getenv('DATA_PATH')
+data_dir = '/data'
 FILES_DIR = path.join(data_dir, 'input_files')
 
 def download(items, params):
