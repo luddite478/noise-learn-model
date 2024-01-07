@@ -28,13 +28,13 @@ deployments:
   version:
   tags: []
   description:
-  entrypoint: flows/run_training_pipeline.py:run_training_pipeline
+  entrypoint: flows/run_training_pipeline.py:test
   parameters: {
-    'items': [{'NAME': 'genocide organ - leichenlinie', 'LINK': 'https://youtu.be/4oqxZvUGXe4?si=6ql80J4T04ZYfORh'}],
-    'params': {
-      'audio_length': 30
-    }
-  }
+    # 'items': [{'NAME': 'genocide organ - leichenlinie', 'LINK': 'https://youtu.be/4oqxZvUGXe4?si=6ql80J4T04ZYfORh'}],
+    # 'params': {
+    #   'audio_length': 30
+    # }
+  } 
   work_pool:
     name: noise-learn-k8s
     work_queue_name:

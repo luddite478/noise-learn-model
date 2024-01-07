@@ -46,6 +46,11 @@ def run_training_pipeline(items, params):
     preprocess()
     train()
 
+@flow(log_prints=True)
+def test(items, params):
+    params['run_name'] = FlowRunContext.get().flow_run.dict().get('name')
+    print('tessssssssssst')
+
 if __name__ == "__main__":
     items = [{'NAME': 'genocide organ - leichenlinie', 'LINK': 'https://youtu.be/4oqxZvUGXe4?si=6ql80J4T04ZYfORh'}]
     params = {
