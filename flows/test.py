@@ -7,7 +7,7 @@ from prefect.blocks.system import JSON
 import json
 
 @flow(log_prints=True)
-def test(items, params):
+def test():
     print('tessssssssssst')
 
 if __name__ == "__main__":

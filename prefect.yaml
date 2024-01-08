@@ -1,22 +1,6 @@
 name: flows
 prefect-version: 2.13.8
 
-# build:
-# - prefect_docker.deployments.steps.build_docker_image:
-#     id: build-image
-#     requires: prefect-docker>=0.4.0
-#     image_name: 'luddite478/noise-learn'
-#     tag: latest
-#     dockerfile: Dockerfile
-#     platform: linux/amd64
-
-# push:
-# - prefect_docker.deployments.steps.push_docker_image:
-#     requires: prefect-docker>=0.4.0
-#     image_name: '{{ build-image.image_name }}'
-#     tag: '{{ build-image.tag }}'
-#     credentials: "{{ prefect.blocks.docker-registry-credentials.dockerhub }}"
-
 pull:
 - prefect.deployments.steps.set_working_directory:
     directory: /
@@ -29,16 +13,9 @@ deployments:
   tags: []
   description:
   entrypoint: flows/test.py:test
-  parameters: {
-    # 'items': [{'NAME': 'genocide organ - leichenlinie', 'LINK': 'https://youtu.be/4oqxZvUGXe4?si=6ql80J4T04ZYfORh'}],
-    # 'params': {
-    #   'audio_length': 30
-    # }
-  } 
+  parameters: {} 
   work_pool:
-    name: noise-learn-k8s
+    name: kubernetes-local
     work_queue_name:
-    job_variables: {
-      # image: '{{ build-image.image_name }}'
-    }
+    job_variables: { }
   schedule:
