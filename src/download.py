@@ -1,6 +1,6 @@
 from dotenv import dotenv_values
 import subprocess as sp
-from os import environ, path, makedirs, getenv
+from os import environ, path, makedirs, getenv, listdir
 import secrets
 import shutil
 
@@ -53,14 +53,14 @@ def mv_file_test():
     target_dir = '/tmp'
 
     # Get a list of all file and directory names in the source directory
-    names = os.listdir(source_dir)
+    names = listdir(source_dir)
 
     for name in names:
-        source = os.path.join(source_dir, name)
-        target = os.path.join(target_dir, name)
+        source = path.join(source_dir, name)
+        target = path.join(target_dir, name)
 
         # If it's a directory, use copytree
-        if os.path.isdir(source):
+        if path.isdir(source):
             shutil.copytree(source, target)
         else:
             shutil.copy(source, target)
