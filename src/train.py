@@ -21,17 +21,16 @@ MLFLOW_URL          = os.getenv('MLFLOW_URL')
 print('MLFLOW_URL', MLFLOW_URL)
 mlflow.set_tracking_uri(MLFLOW_URL)
 mlflow.set_experiment("some")
-tracking_uri = mlflow.get_tracking_uri()
-print(f"Current tracking uri: {tracking_uri}")
-
-if 'PREFECT_RUN_NAME' in os.environ:
-    RUN_NAME = os.environ['PREFECT_RUN_NAME']
-else:
-    RUN_NAME = secrets.token_hex(3)[:5]
 
 
 def verify_mlflow_connection(experiment_name):
+    if 'PREFECT_RUN_NAME' in os.environ:
+        RUN_NAME = os.environ['PREFECT_RUN_NAME']
+    else:
+        RUN_NAME = secrets.token_hex(3)[:5]
     client = mlflow.tracking.MlflowClient()
+    tracking_uri = mlflow.get_tracking_uri()
+    print(f"Current tracking uri: {tracking_uri}")
 
     try:
         # Get experiment by name
