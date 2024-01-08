@@ -12,26 +12,15 @@ BATCH_SIZE    = 1
 EPOCHS        = 25
 
 data_dir            = os.getenv('DATA_DIR')
-data_dir            = os.getenv('MLFLOW_URL')
 SPECTROGRAMS_PATH   = os.path.join(data_dir, 'spectrograms')
 MODEL_DIR           = os.path.join(data_dir, 'model')
 
 MLFLOW_URL          = os.getenv('MLFLOW_URL')
 mlflow.set_tracking_uri(MLFLOW_URL)
 
-def log_directory_contents(directory):
-    for root, dirs, files in os.walk(directory):
-        level = root.replace(directory, '').count(os.sep)
-        indent = ' ' * 4 * (level)
-        print('{}{}/'.format(indent, os.path.basename(root)))
-        subindent = ' ' * 4 * (level + 1)
-        for f in files:
-            print('{}{}'.format(subindent, f))
-
 def load_fsdd(spectrograms_path):
     x_train = []
     for root, _, file_names in os.walk(spectrograms_path):
-        print('SPECTROGRAMS', file_names)
         for file_name in file_names:
             file_path = os.path.join(root, file_name)
             spectrogram = np.load(file_path) # (n_bins, n_frames, 1)
@@ -43,10 +32,8 @@ def load_fsdd(spectrograms_path):
 
 def train():
     mlflow.start_run()
-    log_directory_contents('/data')
-
     x_train = load_fsdd(SPECTROGRAMS_PATH)
-    
+
     autoencoder = VAE(
         input_shape=(256, 864, 1),
         conv_filters=(512, 256, 128, 64, 32),
