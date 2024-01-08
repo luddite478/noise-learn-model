@@ -6,15 +6,18 @@ import numpy as np
 
 from autoencoder import VAE
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = "2"
-mlflow.set_tracking_uri('http://mlflow.noise')
 
 LEARNING_RATE = 0.0005
 BATCH_SIZE    = 1
 EPOCHS        = 25
 
 data_dir            = os.getenv('DATA_PATH')
+data_dir            = os.getenv('MLFLOW_URL')
 SPECTROGRAMS_PATH   = os.path.join(data_dir, 'spectrograms')
 MODEL_DIR           = os.path.join(data_dir, 'model')
+
+MLFLOW_URL          = os.getenv('MLFLOW_URL')
+mlflow.set_tracking_uri(MLFLOW_URL)
 
 def load_fsdd(spectrograms_path):
     x_train = []
