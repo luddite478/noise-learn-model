@@ -12,7 +12,7 @@ deployments:
   version:
   tags: []
   description:
-  entrypoint: flows/test.py:test
+  entrypoint: flows/run_training_pipeline.py:run_training_pipeline
   parameters: {} 
   work_pool:
     name: kubernetes-local

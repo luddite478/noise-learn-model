@@ -20,7 +20,11 @@ from preprocess import preprocess as run_preprocess
 from train import train as run_training
 
 @task
-def download(items, params):
+def download():
+    items = [{'NAME': 'genocide organ - leichenlinie', 'LINK': 'https://youtu.be/4oqxZvUGXe4?si=6ql80J4T04ZYfORh'}]
+    params = {
+        'audio_length': 60
+    }
     print("Downloading...")
     run_download(items, params)
 
@@ -40,16 +44,12 @@ def train():
 
 
 @flow(log_prints=True)
-def run_training_pipeline(items, params):
+def run_training_pipeline():
     params['run_name'] = FlowRunContext.get().flow_run.dict().get('name')
-    download(items, params)
+    download()
     preprocess()
     train()
 
-@flow(log_prints=True)
-def test(items, params):
-    params['run_name'] = FlowRunContext.get().flow_run.dict().get('name')
-    print('tessssssssssst')
 
 if __name__ == "__main__":
     items = [{'NAME': 'genocide organ - leichenlinie', 'LINK': 'https://youtu.be/4oqxZvUGXe4?si=6ql80J4T04ZYfORh'}]
