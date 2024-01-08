@@ -20,6 +20,7 @@ MODEL_DIR            = os.path.join(data_dir, 'model')
 MLFLOW_URL          = os.getenv('MLFLOW_URL')
 print('MLFLOW_URL', MLFLOW_URL)
 mlflow.set_tracking_uri(MLFLOW_URL)
+mlflow.set_experiment("some")
 tracking_uri = mlflow.get_tracking_uri()
 print(f"Current tracking uri: {tracking_uri}")
 
