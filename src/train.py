@@ -74,6 +74,7 @@ def mlflow_log_artifacts(source_dir):
 
 def train():
     with mlflow.start_run() as run:
+        verify_mlflow_connection('some')
         print("Run ID:", run.info.run_id)
         print("Experiment ID:", run.info.experiment_id)
 
@@ -107,7 +108,6 @@ def train():
     mlflow.end_run()
 
 if __name__ == "__main__":
-    verify_mlflow_connection('some')
     train()
 
 
