@@ -23,7 +23,6 @@ prefect-deploy:
 		-v $(HOST_DATA_DIR):$(CONTAINER_DATA_DIR) \
 		-v $(HOST_PROJECT_DIR):$(CONTAINER_PROJECT_DIR) \
 		-w $(CONTAINER_PROJECT_DIR) \
-		--env-file .local.env \
 		$(DOCKER_IMAGE_NAME) /bin/bash -c "prefect cloud login --key $(PREFECT_API_KEY) && prefect deploy --all"
 
 get-tensor:

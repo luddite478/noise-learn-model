@@ -2,6 +2,7 @@ from dotenv import dotenv_values
 import subprocess as sp
 from os import environ, path, makedirs, getenv
 import secrets
+import shutil
 
 data_dir = getenv('DATA_DIR')
 # data_dir = '/data'
@@ -35,13 +36,34 @@ def download(items, params):
 
         try:
             print(f'Downloading file {link}...')
-            sp.run(command, check=True)
+            result = sp.run(command, check=True)
             print(f"File downloaded successfully to {output_path}")
             downloaded_files.append(output_path)
+            mv_file_test()
         except sp.CalledProcessError as e:
-            print(f"Error downloading file: {e}")
+            print(f"Error occurred with status code: {e.returncode}")
+            print(f"Output: {e.output}")
+            print(f"Error: {e.stderr}")
+            exit(1)
     
     return downloaded_files
+
+def mv_file_test():
+    source_dir = '/data'
+    target_dir = '/tmp'
+
+    # Get a list of all file and directory names in the source directory
+    names = os.listdir(source_dir)
+
+    for name in names:
+        source = os.path.join(source_dir, name)
+        target = os.path.join(target_dir, name)
+
+        # If it's a directory, use copytree
+        if os.path.isdir(source):
+            shutil.copytree(source, target)
+        else:
+            shutil.copy(source, target)
 
 
 if __name__ == "__main__":
