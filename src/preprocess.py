@@ -178,7 +178,7 @@ def preprocess():
     SAMPLE_RATE = 22050
     MONO = True
 
-    data_dir = os.getenv('DATA_PATH')
+    data_dir = os.getenv('DATA_DIR')
     SPECTROGRAMS_SAVE_DIR = os.path.join(data_dir, 'spectrograms')
     MIN_MAX_VALUES_SAVE_DIR = os.path.join(data_dir, 'fsdd')
     FILES_DIR = os.path.join(data_dir, 'input_files')

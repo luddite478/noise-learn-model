@@ -23,6 +23,7 @@ prefect-deploy:
 		-v $(HOST_DATA_DIR):$(CONTAINER_DATA_DIR) \
 		-v $(HOST_PROJECT_DIR):$(CONTAINER_PROJECT_DIR) \
 		-w $(CONTAINER_PROJECT_DIR) \
+		--env-file .local.env \
 		$(DOCKER_IMAGE_NAME) /bin/bash -c "prefect cloud login --key $(PREFECT_API_KEY) && prefect deploy --all"
 
 get-tensor:
@@ -30,7 +31,8 @@ get-tensor:
 		-v $(HOST_PROJECT_DIR):$(CONTAINER_PROJECT_DIR) \
 		-v $(HOST_DATA_DIR):$(CONTAINER_DATA_DIR) \
 		-w $(CONTAINER_SRC_DIR) \
-		-e DATA_PATH=$(CONTAINER_DATA_DIR) \
+		-e DATA_DIR=$(CONTAINER_DATA_DIR) \
+		--env-file .local.env \
 		$(DOCKER_IMAGE_NAME) python get_tensor_size.py
 
 download:
@@ -38,7 +40,8 @@ download:
 		-v $(HOST_DATA_DIR):$(CONTAINER_DATA_DIR) \
 		-v $(HOST_PROJECT_DIR):$(CONTAINER_PROJECT_DIR) \
 		-w $(CONTAINER_SRC_DIR) \
-		-e DATA_PATH=$(CONTAINER_DATA_DIR) \
+		-e DATA_DIR=$(CONTAINER_DATA_DIR) \
+		--env-file .local.env \
 		$(DOCKER_IMAGE_NAME) python download.py
 
 preprocess:
@@ -46,7 +49,8 @@ preprocess:
 		-v $(HOST_DATA_DIR):$(CONTAINER_DATA_DIR) \
 		-v $(HOST_PROJECT_DIR):$(CONTAINER_PROJECT_DIR) \
 		-w $(CONTAINER_SRC_DIR) \
-		-e DATA_PATH=$(CONTAINER_DATA_DIR) \
+		-e DATA_DIR=$(CONTAINER_DATA_DIR) \
+		--env-file .local.env \
 		$(DOCKER_IMAGE_NAME) python preprocess.py
 
 train:
@@ -54,8 +58,9 @@ train:
 		-v $(HOST_DATA_DIR):$(CONTAINER_DATA_DIR) \
 		-v $(HOST_PROJECT_DIR):$(CONTAINER_PROJECT_DIR) \
 		-w $(CONTAINER_SRC_DIR) \
-		-e DATA_PATH=$(CONTAINER_DATA_DIR) \
+		-e DATA_DIR=$(CONTAINER_DATA_DIR) \
 		-e MLFLOW_ARTIFACT_STORE=$(CONTAINER_DATA_DIR)  \
+		--env-file .local.env \
 		$(DOCKER_IMAGE_NAME) python train.py
 
 generate:
@@ -63,7 +68,8 @@ generate:
 		-v $(HOST_DATA_DIR):$(CONTAINER_DATA_DIR) \
 		-v $(HOST_PROJECT_DIR):$(CONTAINER_PROJECT_DIR) \
 		-w  $(CONTAINER_SRC_DIR) \
-		-e DATA_PATH=$(CONTAINER_DATA_DIR) \
+		-e DATA_DIR=$(CONTAINER_DATA_DIR) \
+		--env-file .local.env \
 		$(DOCKER_IMAGE_NAME) python generate.py
 
 run-training-pipeline:
@@ -71,5 +77,6 @@ run-training-pipeline:
 		-v $(HOST_DATA_DIR):$(CONTAINER_DATA_DIR) \
 		-v $(HOST_PROJECT_DIR):$(CONTAINER_PROJECT_DIR) \
 		-w $(CONTAINER_FLOWS_DIR) \
-		-e DATA_PATH=$(CONTAINER_DATA_DIR) \
+		-e DATA_DIR=$(CONTAINER_DATA_DIR) \
+		--env-file .local.env \
 		$(DOCKER_IMAGE_NAME) /bin/bash -c "prefect cloud login --key $(PREFECT_API_KEY) && python run_training_pipeline.py"

@@ -13,7 +13,7 @@ for key, value in env.items():
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 src_dir = os.path.join(os.path.dirname(current_dir), 'src')
-sys.path.append(src_dir)  
+sys.path.append(src_dir)
 
 from download import download as run_download
 from preprocess import preprocess as run_preprocess
