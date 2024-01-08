@@ -45,7 +45,7 @@ def train():
 
 @flow(log_prints=True)
 def run_training_pipeline():
-    # params['run_name'] = FlowRunContext.get().flow_run.dict().get('name')
+    os.environ['PREFECT_RUN_NAME'] = FlowRunContext.get().flow_run.dict().get('name')
     download()
     preprocess()
     train()

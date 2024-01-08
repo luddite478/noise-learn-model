@@ -5,7 +5,6 @@ import secrets
 import shutil
 
 data_dir = getenv('DATA_DIR')
-# data_dir = '/data'
 FILES_DIR = path.join(data_dir, 'input_files')
 
 def download(items, params):
@@ -52,20 +51,9 @@ def mv_file_test():
     source_dir = '/data'
     target_dir = '/tmp'
 
-    # Get a list of all file and directory names in the source directory
-    names = listdir(source_dir)
-
-    for name in names:
-        source = path.join(source_dir, name)
-        target = path.join(target_dir, name)
-
-        # If it's a directory, use copytree
-        if path.isdir(source):
-            if path.exists(target):
-                shutil.rmtree(target)  # remove existing directory before copy
-            shutil.copytree(source, target)
-        else:
-            shutil.copy(source, target)
+    if path.exists(target_dir):
+        shutil.rmtree(target_dir)
+    shutil.copytree(source_dir, target_dir)
 
 
 if __name__ == "__main__":
