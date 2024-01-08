@@ -61,6 +61,8 @@ def mv_file_test():
 
         # If it's a directory, use copytree
         if path.isdir(source):
+            if path.exists(target):
+                shutil.rmtree(target)  # remove existing directory before copy
             shutil.copytree(source, target)
         else:
             shutil.copy(source, target)
