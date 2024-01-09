@@ -9,6 +9,7 @@ DOCKER_IMAGE_NAME = $(DOCKERHUB_REGISTRY_SERVER)/$(DOCKERHUB_REGISTRY_REPO)
 
 init:
 	rm -rf $(HOST_DATA_DIR) && mkdir -p $(HOST_DATA_DIR)/input_files
+	if [ ! -f .local.env ]; then cp example.local.env .local.env; fi
 
 docker-build:
 	docker build --progress=plain -t $(DOCKER_IMAGE_NAME) .
@@ -71,7 +72,7 @@ generate:
 		--env-file .local.env \
 		$(DOCKER_IMAGE_NAME) python generate.py
 
-run-training-pipeline:
+run-training-pipeline-local:
 	docker run -ti --gpus all --rm \
 		-v $(HOST_DATA_DIR):$(CONTAINER_DATA_DIR) \
 		-v $(HOST_PROJECT_DIR):$(CONTAINER_PROJECT_DIR) \
@@ -79,3 +80,12 @@ run-training-pipeline:
 		-e DATA_DIR=$(CONTAINER_DATA_DIR) \
 		--env-file .local.env \
 		$(DOCKER_IMAGE_NAME) /bin/bash -c "prefect cloud login --key $(PREFECT_API_KEY) && python run_training_pipeline.py"
+
+run-training-pipeline-infra:
+	docker run -ti --gpus all --rm \
+		-v $(HOST_DATA_DIR):$(CONTAINER_DATA_DIR) \
+		-v $(HOST_PROJECT_DIR):$(CONTAINER_PROJECT_DIR) \
+		-w $(CONTAINER_FLOWS_DIR) \
+		-e DATA_DIR=$(CONTAINER_DATA_DIR) \
+		--env-file .local.env \
+		$(DOCKER_IMAGE_NAME) /bin/bash -c "prefect cloud login --key $(PREFECT_API_KEY) && prefect deployment run run-training-pipeline/training

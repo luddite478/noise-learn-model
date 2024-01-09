@@ -61,7 +61,7 @@ def train():
         autoencoder.save(MODEL_DIR)
         
         mlflow.log_artifact(MODEL_DIR)
-        mlflow.keras.log_model(autoencoder.model, 'model')
+        #TODO mlflow.log_model
 
     mlflow.end_run()
 

@@ -11,7 +11,7 @@ import numpy as np
 import tensorflow as tf
 
 
-# tf.compat.v1.disable_eager_execution()
+tf.compat.v1.disable_eager_execution()
 
 
 ###########################
@@ -62,38 +62,6 @@ class VAE:
         self._model_input = None
 
         self._build()
-
-    def get_config(self):
-        return {
-            'input_shape': self.input_shape,
-            'conv_filters': self.conv_filters,
-            'conv_kernels': self.conv_kernels,
-            'conv_strides': self.conv_strides,
-            'latent_space_dim': self.latent_space_dim,
-            'reconstruction_loss_weight': self.reconstruction_loss_weight,
-            'encoder': self.encoder.get_config(),
-            'decoder': self.decoder.get_config(),
-            'model': self.model.get_config(),
-        }
-
-    @classmethod
-    def from_config(cls, config):
-        # Create a new instance of the VAE
-        vae = cls(
-            input_shape=config['input_shape'],
-            conv_filters=config['conv_filters'],
-            conv_kernels=config['conv_kernels'],
-            conv_strides=config['conv_strides'],
-            latent_space_dim=config['latent_space_dim'],
-        )
-        vae.reconstruction_loss_weight = config['reconstruction_loss_weight']
-
-        # Build the encoder, decoder, and VAE models from their configs
-        vae.encoder = keras.Model.from_config(config['encoder'])
-        vae.decoder = keras.Model.from_config(config['decoder'])
-        vae.model = keras.Model.from_config(config['model'])
-
-        return vae
     
     def summary(self):
         self.encoder.summary()
