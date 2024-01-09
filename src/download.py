@@ -35,10 +35,9 @@ def download(items, params):
 
         try:
             print(f'Downloading file {link}...')
-            result = sp.run(command, check=True)
+            result = sp.run(command, check=True, stdout=sp.PIPE, stderr=sp.PIPE)
             print(f"File downloaded successfully to {output_path}")
             downloaded_files.append(output_path)
-            mv_file_test()
         except sp.CalledProcessError as e:
             print(f"Error occurred with status code: {e.returncode}")
             print(f"Output: {e.output}")

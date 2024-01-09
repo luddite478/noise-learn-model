@@ -19,7 +19,8 @@ RUN pip install --no-cache-dir \
     yt-dlp \
     soundfile \
     prefect==2.14.11 \
-    mlflow
+    mlflow \
+    boto3 
 
 RUN mkdir -p /data
 ENV TF_FORCE_GPU_ALLOW_GROWTH=true
