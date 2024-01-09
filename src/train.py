@@ -16,10 +16,10 @@ data_dir             = os.getenv('DATA_DIR')
 SPECTROGRAMS_PATH    = os.path.join(data_dir, 'spectrograms')
 MODEL_DIR            = os.path.join(data_dir, 'model')
 
-os.environ["AWS_ACCESS_KEY_ID"] = os.getenv('S3_ACCESS_KEY')
-os.environ["AWS_SECRET_ACCESS_KEY"] = os.getenv('S3_SECRET_KEY')
+os.environ["AWS_ACCESS_KEY_ID"]      = os.getenv('S3_ACCESS_KEY')
+os.environ["AWS_SECRET_ACCESS_KEY"]  = os.getenv('S3_SECRET_KEY')
 os.environ["MLFLOW_S3_ENDPOINT_URL"] = os.getenv('S3_URL')
-MLFLOW_URL          = os.getenv('MLFLOW_URL')
+MLFLOW_URL                           = os.getenv('MLFLOW_URL')
 mlflow.set_tracking_uri(MLFLOW_URL)
 
 def load_fsdd(spectrograms_path):
@@ -61,6 +61,7 @@ def train():
         autoencoder.save(MODEL_DIR)
         
         mlflow.log_artifact(MODEL_DIR)
+        mlflow.keras.log_model(autoencoder.model, 'model')
 
     mlflow.end_run()
 
