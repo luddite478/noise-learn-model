@@ -88,4 +88,4 @@ run-training-pipeline-infra:
 		-w $(CONTAINER_FLOWS_DIR) \
 		-e DATA_DIR=$(CONTAINER_DATA_DIR) \
 		--env-file .local.env \
-		$(DOCKER_IMAGE_NAME) /bin/bash -c "prefect cloud login --key $(PREFECT_API_KEY) && prefect deployment run run-training-pipeline/training
+		$(DOCKER_IMAGE_NAME) /bin/bash -c "prefect cloud login --key $(PREFECT_API_KEY) && prefect deployment run run-training-pipeline/training"
