@@ -4,7 +4,8 @@
 - Docker
 - MLflow server
 - S3 server (required for MLflow)
-- Prefect server (used for orchestrating scripts within flows)
+- Prefect server (used for orchestrating scripts within flows/)
+- Docker registry (To handle remote Prefect flow runs)
 
 ## Initialization
 To initialize the project, run:
@@ -16,9 +17,13 @@ make init
 Fill values in the `.local.env` file
 
 ## Building Docker Image
-To build the Docker image, execute:
 \`\`\`
 make docker-build
+\`\`\`
+
+## Pushing Docker Image
+\`\`\`
+make docker-push
 \`\`\`
 
 ## Data Download Options
