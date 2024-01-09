@@ -34,14 +34,14 @@ def download(items, params):
         ]
 
         try:
-            print(f'Downloading file {link}...')
+            print(f'Downloading file [{link}]...')
             result = sp.run(command, check=True, stdout=sp.PIPE, stderr=sp.PIPE)
             print(f"File downloaded successfully to {output_path}")
             downloaded_files.append(output_path)
         except sp.CalledProcessError as e:
             print(f"Error occurred with status code: {e.returncode}")
-            print(f"Output: {e.output}")
-            print(f"Error: {e.stderr}")
+            print(f"Stdout: {e.output}")
+            print(f"Stderr: {e.stderr}")
             exit(1)
     
     return downloaded_files
@@ -58,4 +58,5 @@ def mv_file_test():
 if __name__ == "__main__":
     # test
     items = [{'NAME': 'genocide organ - leichenlinie', 'LINK': 'https://youtu.be/4oqxZvUGXe4?si=6ql80J4T04ZYfORh'}]
-    download(items)
+    params = {}
+    download(items, params)
