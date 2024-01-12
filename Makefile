@@ -1,4 +1,5 @@
 include .local.env
+
 HOST_PROJECT_DIR = $(PWD)
 HOST_DATA_DIR = $(PWD)/data
 CONTAINER_PROJECT_DIR = /app
@@ -6,6 +7,7 @@ CONTAINER_DATA_DIR = /data
 CONTAINER_SRC_DIR = /app/src
 CONTAINER_FLOWS_DIR = /app/flows
 DOCKER_IMAGE_NAME = $(DOCKERHUB_REGISTRY_SERVER)/$(DOCKERHUB_REGISTRY_REPO)
+JUPYTER_TOKEN = abc
 
 init:
 	rm -rf $(HOST_DATA_DIR) && mkdir -p $(HOST_DATA_DIR)/input_files
@@ -13,6 +15,28 @@ init:
 
 docker-build:
 	docker build --progress=plain -t $(DOCKER_IMAGE_NAME) .
+
+docker-build-dev:
+	docker build --build-arg BASE_IMAGE=$(DOCKER_IMAGE_NAME) --progress=plain -t $(DOCKER_IMAGE_NAME):dev -f ./Dockerfile.dev .
+
+jupyter-docker:
+	docker run -ti --gpus all --rm \
+		--name jupyter \
+		-v $(HOST_PROJECT_DIR):$(CONTAINER_PROJECT_DIR) \
+		-v $(HOST_DATA_DIR):$(CONTAINER_DATA_DIR) \
+		-w $(CONTAINER_SRC_DIR) \
+		-p 8888:8888 \
+		-e DATA_DIR=$(CONTAINER_DATA_DIR) \
+		--env-file .local.env \
+		$(DOCKER_IMAGE_NAME):dev jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.allow_origin='*' --NotebookApp.token=$(JUPYTER_TOKEN)
+
+docker-exec:
+	docker run -ti --gpus all --rm \
+		-v $(HOST_PROJECT_DIR):$(CONTAINER_PROJECT_DIR) \
+		-v $(HOST_DATA_DIR):$(CONTAINER_DATA_DIR) \
+		-w $(CONTAINER_SRC_DIR) \
+		--env-file .local.env \
+		$(DOCKER_IMAGE_NAME):dev bash
 
 docker-push:
 	echo "$(DOCKERHUB_REGISTRY_PASSWORD)" | \

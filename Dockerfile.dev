@@ -1,0 +1,21 @@
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+
+RUN echo '\
+Acquire::Retries "100";\
+Acquire::https::Timeout "240";\
+Acquire::http::Timeout "240";\
+APT::Get::Assume-Yes "true";\
+APT::Install-Recommends "false";\
+APT::Install-Suggests "false";\
+Debug::Acquire::https "true";\
+' > /etc/apt/apt.conf.d/99custom
+
+
+RUN apt-get update && apt-get install -y --fix-missing \
+    jupyter
+
+RUN pip install --no-cache-dir \
+    jupytext 
+
+RUN apt install -y epiphany jupyter-notebook

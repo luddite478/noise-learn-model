@@ -5,11 +5,20 @@ RUN python --version
 RUN gpg --keyserver keyserver.ubuntu.com --recv A4B469963BF863CC
 RUN gpg --export --armor A4B469963BF863CC | apt-key add -
 
+RUN echo '\
+Acquire::Retries "100";\
+Acquire::https::Timeout "240";\
+Acquire::http::Timeout "240";\
+APT::Get::Assume-Yes "true";\
+APT::Install-Recommends "false";\
+APT::Install-Suggests "false";\
+Debug::Acquire::https "true";\
+' > /etc/apt/apt.conf.d/99custom
+
 RUN apt-get update && apt-get install -y \
     libsndfile1 \
     ffmpeg \
-    git \
-    && rm -rf /var/lib/apt/lists/*
+    git
 
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir \
