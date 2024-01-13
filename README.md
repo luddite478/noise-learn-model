@@ -4,7 +4,7 @@
 - Docker
 - MLflow server
 - S3 server (required for MLflow)
-- Prefect server (used for orchestrating scripts within flows/)
+- Prefect server (used for orchestrating scripts within `flows/`)
 - Docker registry (To handle remote Prefect flow runs)
 
 ### Initialization
