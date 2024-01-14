@@ -6,6 +6,7 @@ import numpy as np
 from dotenv import load_dotenv
 load_dotenv()
 import os
+import subprocess as sp
 
 
 class Loader:
@@ -70,7 +71,7 @@ class MinMaxNormaliser:
         self.max = max_val
 
     def normalise(self, array):
-        norm_array = (array - array.min()) / (array.max() - array.min())
+        norm_array = (array - array.min()) / (array.max() - array.min() + 1e-6)
         norm_array = norm_array * (self.max - self.min) + self.min
         return norm_array
 
@@ -140,11 +141,55 @@ class PreprocessingPipeline:
 
     def process(self, audio_files_dir):
         for root, _, files in os.walk(audio_files_dir):
-            for file in files:
-                file_path = os.path.join(root, file)
+            file_paths = [os.path.join(root, file) for file in files]
+            for file_path in file_paths:
+                self._split_file_if_necessary(file_path, self.loader.duration)
+
+        for root, _, files in os.walk(audio_files_dir):
+            file_paths = [os.path.join(root, file) for file in files]
+            for file_path in file_paths:
                 self._process_file(file_path)
                 print(f"Processed file {file_path}")
         self.saver.save_min_max_values(self.min_max_values)
+
+    def _split_file_if_necessary(self, file_path, duration):
+        try:
+            # Command to get the total duration of the file in seconds
+            duration_command = ['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'default=noprint_wrappers=1:nokey=1', file_path]
+            process = sp.Popen(duration_command, stdout=sp.PIPE, stderr=sp.PIPE)
+            stdout, stderr = process.communicate()
+
+            if process.returncode != 0:
+                print(f"Error occurred: stdout: {stdout.decode('utf-8')}", f"stderr: {stderr.decode('utf-8')}")
+                return
+
+            total_duration = float(stdout.strip())
+
+            # Calculate the number of chunks
+            num_chunks = int(total_duration // duration)
+
+            # Split the file into chunks
+            for i in range(num_chunks):
+                start_time = i * duration
+                ext = os.path.splitext(file_path)[1]
+                output_file = f"{os.path.splitext(file_path)[0]}_{i}{ext}"
+                
+                # Command to split the file
+                split_command = ['ffmpeg', '-i', file_path, '-ss', str(start_time), '-t', str(duration), '-vn', '-acodec', 'copy',  '-y', output_file]
+                process = sp.Popen(split_command, stdout=sp.PIPE, stderr=sp.PIPE)
+                stdout, stderr = process.communicate()
+
+                if process.returncode != 0:
+                    print(f"Error occurred: stdout: {stdout.decode('utf-8')}", f"stderr: {stderr.decode('utf-8')}")
+                else:
+                    print(f"Chunk {i} created")
+                    
+            os.remove(file_path)
+
+            print(f"File {file_path} was split into {num_chunks} chunks of {duration} seconds each.")
+        except Exception as e:
+            print(f"An error occurred: {str(e)}")
+
 
     def _process_file(self, file_path):
         signal = self.loader.load(file_path)
@@ -155,6 +200,7 @@ class PreprocessingPipeline:
         save_path = self.saver.save_feature(norm_feature, file_path)
         self._store_min_max_value(save_path, feature.min(), feature.max())
 
+    
     def _is_padding_necessary(self, signal):
         if len(signal) < self._num_expected_samples:
             return True
@@ -205,10 +251,3 @@ def preprocess():
 
 if __name__ == "__main__":
     preprocess()
-
-
-    # MIN_MAX_VALUES_PATH = os.path.join(MIN_MAX_VALUES_SAVE_DIR, 'min_max_values.pkl')
-    # with open(MIN_MAX_VALUES_PATH, "rb") as f:
-    #     min_max_values = pickle.load(f)
-    #     for v in min_max_values:
-    #         print('vv', v, min_max_values[v])

@@ -11,11 +11,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 HOP_LENGTH = 256
-data_dir = os.getenv('DATA_DIR')
+data_dir            = os.getenv('DATA_DIR')
 SPECTROGRAMS_PATH   = os.path.join(data_dir, 'spectrograms')
 MIN_MAX_VALUES_PATH = os.path.join(data_dir, 'fsdd/min_max_values.pkl') 
-SAVE_DIR_ORIGINAL = os.path.join(data_dir, 'original')
-SAVE_DIR_GENERATED = os.path.join(data_dir, 'generated')
+SAVE_DIR_ORIGINAL   = os.path.join(data_dir, 'original')
+SAVE_DIR_GENERATED  = os.path.join(data_dir, 'generated')
 MODEL_DIR           = os.path.join(data_dir, 'model')
 
 os.makedirs(SAVE_DIR_ORIGINAL, exist_ok=True)
