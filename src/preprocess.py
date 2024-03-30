@@ -167,6 +167,8 @@ class PreprocessingPipeline:
 
             # Calculate the number of chunks
             num_chunks = int(total_duration // duration)
+            if num_chunks == 0:
+                return
 
             # Split the file into chunks
             for i in range(num_chunks):
@@ -220,7 +222,7 @@ class PreprocessingPipeline:
 def preprocess():
     FRAME_SIZE = 512
     HOP_LENGTH = 256
-    DURATION = 10.025 # in seconds
+    DURATION = 0.74  # in seconds
     SAMPLE_RATE = 22050
     MONO = True
 

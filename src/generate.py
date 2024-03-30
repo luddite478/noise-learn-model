@@ -6,6 +6,7 @@ import soundfile as sf
 
 from soundgenerator import SoundGenerator
 from autoencoder import VAE
+from mlflow.tracking import MlflowClient
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -41,8 +42,6 @@ def select_spectrograms(spectrograms,
                         num_spectrograms=2):
     sampled_indexes = np.random.choice(range(len(spectrograms)), num_spectrograms)
     sampled_spectrogrmas = spectrograms[sampled_indexes]
-    for p in file_paths:
-        print(p)
     file_paths = [file_paths[index] for index in sampled_indexes]
     sampled_min_max_values = [min_max_values[file_path] for file_path in
                            file_paths]
@@ -99,9 +98,18 @@ def generate_unique():
 
 
 
+# def get_latest_run_id(experiment_id):
+#     client = MlflowClient()
+#     run_infos = client.list_run_infos(experiment_id, order_by=["attribute.start_time DESC"])
+#     return run_infos[0].run_id if run_infos else None
+
+# usage
+# experiment_id = "your_experiment_id"  # replace with your experiment id
+# latest_run_id = get_latest_run_id(experiment_id)
+
 if __name__ == "__main__":
-    # test_generate()
-    generate_unique()
+    test_generate()
+    # generate_unique()
     # # initialise sound generator
     # vae = VAE.load("model")
     # sound_generator = SoundGenerator(vae, HOP_LENGTH)
