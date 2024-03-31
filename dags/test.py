@@ -1,6 +1,5 @@
 from airflow import DAG
-from airflow.operators.dummy_operator import DummyOperator
-from airflow.operators.python_operator import PythonOperator
+from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
 from datetime import datetime
 
 # Define the default arguments for the DAG
@@ -23,29 +22,32 @@ dag = DAG(
 def task1_function():
     print("Executing Task 1")
 
-task1 = PythonOperator(
+task1 = KubernetesPodOperator(
     task_id='task1',
-    python_callable=task1_function,
+    namespace='default',  # Update with your namespace
+    image='python:latest',  # Use the latest Python image from Docker Hub
+    cmds=['python', '-c', 'print("Executing Task 1")'],
     dag=dag
 )
 
 def task2_function():
     print("Executing Task 2")
 
-task2 = PythonOperator(
+task2 = KubernetesPodOperator(
     task_id='task2',
-    python_callable=task2_function,
+    namespace='default',  # Update with your namespace
+    image='python:latest',  # Use the latest Python image from Docker Hub
+    cmds=['python', '-c', 'print("Executing Task 2")'],
     dag=dag
 )
 
 def task3_function():
     print("Executing Task 3")
 
-task3 = PythonOperator(
+task3 = KubernetesPodOperator(
     task_id='task3',
-    python_callable=task3_function,
+    namespace='default',  # Update with your namespace
+    image='python:latest',  # Use the latest Python image from Docker Hub
+    cmds=['python', '-c', 'print("Executing Task 3")'],
     dag=dag
 )
-
-# Define task dependencies
-task1 >> task2 >> task3
