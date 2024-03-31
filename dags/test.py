@@ -14,7 +14,7 @@ dag = DAG(
     'multiple_steps_dag',
     default_args=default_args,
     description='A simple DAG with multiple steps',
-    schedule_interval="* * * * *"
+    schedule_interval='*/5 * * * *'
 )
 
 # Define three tasks
