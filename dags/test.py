@@ -24,7 +24,7 @@ def task1_function():
 
 task1 = KubernetesPodOperator(
     task_id='task1',
-    namespace='default',  # Update with your namespace
+    # namespace='default',  # Update with your namespace
     image='python:latest',  # Use the latest Python image from Docker Hub
     cmds=['python', '-c', 'print("Executing Task 1")'],
     dag=dag
@@ -35,7 +35,7 @@ def task2_function():
 
 task2 = KubernetesPodOperator(
     task_id='task2',
-    namespace='default',  # Update with your namespace
+    # namespace='default',  # Update with your namespace
     image='python:latest',  # Use the latest Python image from Docker Hub
     cmds=['python', '-c', 'print("Executing Task 2")'],
     dag=dag
@@ -46,8 +46,10 @@ def task3_function():
 
 task3 = KubernetesPodOperator(
     task_id='task3',
-    namespace='default',  # Update with your namespace
+    # namespace='default',  # Update with your namespace
     image='python:latest',  # Use the latest Python image from Docker Hub
     cmds=['python', '-c', 'print("Executing Task 3")'],
     dag=dag
 )
+
+task1 >> task2 >> task3
